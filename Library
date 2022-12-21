@@ -26,10 +26,10 @@ local Method = {
 		TapColor = Color3.fromRGB(30, 30, 39);
 		TextColor = Color3.fromRGB(255,255,255);		
 	};
-	
 	Pages = {}
-	
 }
+
+Method.index = Method
 
 function Method:CreateNetWorkMark( name : string )
 	local Methods = {}
