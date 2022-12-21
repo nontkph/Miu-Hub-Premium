@@ -1,3 +1,4 @@
+print("First Load")
 local MiuHub = Instance.new("ScreenGui")
 local BackGround = Instance.new("Frame")
 local Topbar = Instance.new("Frame")
@@ -12,10 +13,11 @@ local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
 if _G.LoaderGui then
+	print("Delect Gui")	
 	_G.LoaderGui:Destroy()
 end
-_G.LoaderGui = nil
-
+_G.LoaderGui = MiuHub
+print("Set Gui")
 
 local Method = {
 	Config = {
@@ -28,10 +30,9 @@ local Method = {
 	};
 	Pages = {}
 }
-
-Method.index = Method
-
-function Method:CreateNetWorkMark( name : string )
+Method.__index = Method
+print("Method")
+function Method:CreateNetWorkMark( name )
 	local Methods = {}
 	--// Set Config
 	MiuHub.Name = string.gsub( string.gsub(HttpService:GenerateGUID(true), "{", ""), "}", "" )
@@ -40,7 +41,7 @@ function Method:CreateNetWorkMark( name : string )
 	MiuHub.ResetOnSpawn = false
 	
 	if RunService:IsStudio() then
-		MiuHub.Parent = game:GetService("Players").LocalPlayer
+		MiuHub.Parent = game:GetService("Players").LocalPlayer.PlayerGui
 	else
 		MiuHub.Parent = game:GetService("CoreGui")
 	end
@@ -99,11 +100,10 @@ function Method:CreateNetWorkMark( name : string )
 	UIListLayout.Padding = UDim.new(0, 25)
 		
 	-- Functions
-	Methods.__index = Methods
 	
-	function Methods:CreatePage( Text : string )
+	function Methods:CreatePage( Text )
 		local PageMethod = {}
-		PageMethod.__index = PageMethod
+
 		local Page = Instance.new("TextButton")
 		local Screens = Instance.new("Frame")
 		local UITableLayout = Instance.new("UITableLayout")
@@ -193,7 +193,7 @@ function Method:CreateNetWorkMark( name : string )
 		UIPadding_4.PaddingRight = UDim.new(0, 1)
 		
 		--Function Page
-		function PageMethod:CreateTap(Text : string, Side : string)
+		function PageMethod:CreateTap(Text , Side )
 			local Taps = {}
 			Taps["Functions"] = {}
 			local Tap = Instance.new("Frame")
@@ -261,9 +261,8 @@ function Method:CreateNetWorkMark( name : string )
 			end
 			
 			--Functions
-			function Taps:AddLabel(Text : string)
+			function Taps:AddLabel(Text)
 				local Labels = {}
-				Labels.__index = Labels
 				
 				table.insert(Taps["Functions"], self)
 				local Label = Instance.new("TextLabel")
@@ -280,7 +279,7 @@ function Method:CreateNetWorkMark( name : string )
 				Label.TextXAlignment = Enum.TextXAlignment.Left
 				Label.Text = Text
 				
-				function Labels:Set(Text : string)
+				function Labels:Set(Text)
 					Label.Text = tostring(Text)
 				end
 				task.wait(.1)
@@ -289,10 +288,10 @@ function Method:CreateNetWorkMark( name : string )
 				return Labels
 			end
 			
-			function Taps:AddToggle(Text : string, Default : boolean, Callback)
+			function Taps:AddToggle(Text, Default, Callback)
 				local Toggles = {}
 				table.insert(Taps["Functions"], self)
-				Toggles.index = Toggles
+
 				local Toggle = Instance.new("TextButton")
 				local Title_Toggle = Instance.new("TextLabel")
 				local ColorButton = Instance.new("Frame")
@@ -331,7 +330,7 @@ function Method:CreateNetWorkMark( name : string )
 				UIGradient_2.Parent = ColorButton
 				
 				-- Function
-				local function retuen(Type : boolean)
+				local function retuen(Type)
 					if typeof(Type) ~= "boolean" then return end
 					ColorButton.Visible = Type
 					return Callback(Type)
@@ -363,9 +362,8 @@ function Method:CreateNetWorkMark( name : string )
 				return Toggles
 			end
 			
-			function Taps:AddDropDown(Table : string, Default : string, MultiSelection, CallBack)
+			function Taps:AddDropDown(Table, Default, MultiSelection, CallBack)
 				local DropDowns = {}
-				DropDowns.index = DropDowns
 				
 				table.insert(Taps["Functions"], self)
 				local DropDown = Instance.new("TextButton")
@@ -434,7 +432,7 @@ function Method:CreateNetWorkMark( name : string )
 				UIGridLayout_Selecton.CellSize = UDim2.new(1, 0, 0, 20)
 				
 				local Multi = {}
-				local function Return(Select : string)
+				local function Return(Select)
 					if MultiSelection then
 						if  table.find(Multi, Select) then
 							for i, v in pairs(Multi) do
@@ -484,7 +482,7 @@ function Method:CreateNetWorkMark( name : string )
 				local Tablenow = {}
 				
 				local function ColorButton( Select )
-					for _, buttonz : TextButton in pairs(SelectionTable:GetChildren()) do
+					for _, buttonz  in pairs(SelectionTable:GetChildren()) do
 						if buttonz:IsA("TextButton") then
 							if table.find( Multi, buttonz.Name) or buttonz.Name == Select then
 									buttonz.BackgroundColor3 = Color3.fromRGB(80, 88, 115)
@@ -495,7 +493,7 @@ function Method:CreateNetWorkMark( name : string )
 					end
 				end
 				
-				local function Refresh( Type : string )
+				local function Refresh( Type )
 					Tablenow = Type
 					for _, v in pairs( Type ) do
 						local Button = Instance.new("TextButton")
@@ -541,7 +539,7 @@ function Method:CreateNetWorkMark( name : string )
 					Return(value)
 				end
 				function	DropDowns:SetTable(newtable)
-					for _, ButtonT : TextButton in pairs(Buttons) do
+					for _, ButtonT  in pairs(Buttons) do
 						if ButtonT:IsA("TextButton") then
 							ButtonT:Destroy()
 						end
@@ -576,9 +574,8 @@ function Method:CreateNetWorkMark( name : string )
 				return DropDowns
 			end
 			
-			function Taps:AddSlider(Text : string, Min : number, Default : number, Max : number, decimals: boolean, Callback)
+			function Taps:AddSlider(Text, Min , Default, Max, decimals, Callback)
 				local Sliders = {}
-				Sliders.index = Sliders
 				
 				local Slide = Instance.new("Frame")
 				local Title = Instance.new("TextLabel")
@@ -724,7 +721,6 @@ function Method:CreateNetWorkMark( name : string )
 			
 			function Taps:AddButton(Text, Callback)
 				local Buttons = {}
-				Buttons.index = Buttons
 				
 				local Button = Instance.new("TextButton")
 				local Title = Instance.new("TextLabel")
