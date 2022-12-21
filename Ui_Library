@@ -9,6 +9,7 @@ local UIListLayout = Instance.new("UIListLayout")
 local HttpService = game:GetService("HttpService")
 local Mouse = game:GetService("Players").LocalPlayer:GetMouse()
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 if _G.LoaderGui then
 	_G.LoaderGui:Destroy()
@@ -33,11 +34,16 @@ local Method = {
 function Method:CreateNetWorkMark( name : string )
 	local Methods = {}
 	--// Set Config
-	MiuHub.Name = "MiuHub"
-	MiuHub.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	MiuHub.Name = string.gsub( string.gsub(HttpService:GenerateGUID(true), "{", ""), "}", "" )
 	MiuHub.DisplayOrder = 1000000
 	MiuHub.IgnoreGuiInset = true
 	MiuHub.ResetOnSpawn = false
+	
+	if RunService:IsStudio() then
+		MiuHub.Parent = game:GetService("Players").LocalPlayer
+	else
+		MiuHub.Parent = game:GetService("CoreGui")
+	end
 	
 	BackGround.Name = "BackGround"
 	BackGround.Parent = MiuHub
