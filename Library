@@ -520,7 +520,9 @@ function Method:CreateNetWorkMark( name )
 						
 						local ToString = ""
 						for num, text in pairs(Multi) do
-							ToString = ToString..string.format("%s,", text)
+							if text ~= "" then
+								ToString = ToString..string.format("%s,", text)
+							end
 						end
 						Title.Text = ToString
 						return CallBack(Multi)
@@ -555,12 +557,28 @@ function Method:CreateNetWorkMark( name )
 				local Tablenow = {}
 				
 				local function ColorButton( Select )
-					for _, buttonz  in pairs(SelectionTable:GetChildren()) do
-						if buttonz:IsA("TextButton") then
-							if table.find( Multi, buttonz.Name) or buttonz.Name == Select then
+					if MultiSelection then
+						for _, buttonz  in pairs(SelectionTable:GetChildren()) do
+							if buttonz:IsA("TextButton") then
+								if table.find( Multi, buttonz.Name) then
 									buttonz.BackgroundColor3 = Color3.fromRGB(80, 88, 115)
 								else
 									buttonz.BackgroundColor3 = Color3.fromRGB(21, 23, 30)
+								end
+							end
+						end
+					else
+						for _, buttonz  in pairs(SelectionTable:GetChildren()) do
+							if buttonz:IsA("TextButton") then
+								if buttonz.Name == Select then
+									if buttonz.BackgroundColor3 == Color3.fromRGB(21, 23, 30) then
+										buttonz.BackgroundColor3 = Color3.fromRGB(80, 88, 115)
+									else
+										buttonz.BackgroundColor3 = Color3.fromRGB(21, 23, 30)
+									end
+								else
+									buttonz.BackgroundColor3 = Color3.fromRGB(21, 23, 30)
+								end
 							end
 						end
 					end
