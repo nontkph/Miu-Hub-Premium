@@ -4,19 +4,20 @@ local Topbar = Instance.new("Frame")
 local Title = Instance.new("TextLabel")
 local Line = Instance.new("Frame")
 local UIGradient = Instance.new("UIGradient")
-local Slide = Instance.new("Frame")
+local Slide = Instance.new("ScrollingFrame")
 local UIListLayout = Instance.new("UIListLayout")
 local HttpService = game:GetService("HttpService")
 local Mouse = game:GetService("Players").LocalPlayer:GetMouse()
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
+local TweenService = game:GetService('TweenService')
 
 if _G.LoaderGui then
 	_G.LoaderGui:Destroy()
 end
 _G.LoaderGui = MiuHub
-
+local PageSet = nil
 local Method = {
 	Config = {
 		Color1 = Color3.fromRGB(255, 37, 110);
@@ -30,6 +31,18 @@ local Method = {
 	Pages = {}
 }
 Method.__index = Method
+
+function SwitchPage()
+	for textbutton , screen in pairs(Method.Pages) do
+		if textbutton == PageSet then
+			TweenService:Create(textbutton, TweenInfo.new(.5), {TextTransparency = 0}):Play()
+			screen.Visible = true
+		else
+			TweenService:Create(textbutton, TweenInfo.new(.5), {TextTransparency = .5}):Play()
+			screen.Visible = false
+		end
+	end
+end
 
 function Method:CreateNetWorkMark( name )
 	local Methods = {}
@@ -93,7 +106,10 @@ function Method:CreateNetWorkMark( name )
 	Slide.Position = UDim2.new(0.272727281, 0, 0.122321539, 0)
 	Slide.Size = UDim2.new(0.709090889, 0, 0.714285851, 0)
 	Slide.ZIndex = 11
-
+	Slide.CanvasSize = UDim2.new(0,0, 0, 0)
+	Slide.AutomaticCanvasSize = Enum.AutomaticSize.X
+	Slide.ScrollBarThickness = 0
+	
 	UIListLayout.Parent = Slide
 	UIListLayout.FillDirection = Enum.FillDirection.Horizontal
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -156,8 +172,14 @@ function Method:CreateNetWorkMark( name )
 		
 		Method.Pages[Page] = Screens
 		
+		Page.MouseButton1Click:Connect(function()
+			PageSet = Page
+			SwitchPage()
+		end)
+		
 		Page.Name = Text
 		Page.Parent = Slide
+		Page.AutomaticSize = Enum.AutomaticSize.XY
 		Page.LayoutOrder = #Method.Pages
 		Page.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		Page.BackgroundTransparency = 1.000
@@ -169,7 +191,7 @@ function Method:CreateNetWorkMark( name )
 		Page.TextColor3 = Method.Config.TextColor
 		Page.TextSize = 15.000
 
-		Screens.Name = "Screens"
+		Screens.Name = Text
 		Screens.Parent = BackGround
 		Screens.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		Screens.BackgroundTransparency = 1.000
@@ -231,6 +253,15 @@ function Method:CreateNetWorkMark( name )
 		UIPadding_4.PaddingLeft = UDim.new(0, 1)
 		UIPadding_4.PaddingRight = UDim.new(0, 1)
 		
+		--// Page Config
+		if not PageSet then
+			PageSet = Page
+			SwitchPage()
+		else
+			SwitchPage()
+			Screens.Visible = false
+		end
+		
 		--Function Page
 		function PageMethod:CreateTap(Text , Side )
 			local Taps = {}
@@ -256,6 +287,7 @@ function Method:CreateNetWorkMark( name )
 
 			Title_2.Name = Text
 			Title_2.Parent = Tap
+			Title_2.AutomaticSize = Enum.AutomaticSize.XY
 			Title_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			Title_2.BackgroundTransparency = 1.000
 			Title_2.Position = UDim2.new(0, 14, 0, -8)
@@ -307,6 +339,7 @@ function Method:CreateNetWorkMark( name )
 				local Label = Instance.new("TextLabel")
 				Label.Name = Text
 				Label.Parent = Functions
+				Label.AutomaticSize = Enum.AutomaticSize.XY
 				Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 				Label.BackgroundTransparency = 1.000
 				Label.LayoutOrder = 5
@@ -348,6 +381,7 @@ function Method:CreateNetWorkMark( name )
 
 				Title_Toggle.Name = Text
 				Title_Toggle.Parent = Toggle
+				Title_Toggle.AutomaticSize = Enum.AutomaticSize.XY
 				Title_Toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 				Title_Toggle.BackgroundTransparency = 1.000
 				Title_Toggle.Position = UDim2.new(2.20000005, 0, 0, 0)
