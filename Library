@@ -1,4 +1,3 @@
-print("First Load")
 local MiuHub = Instance.new("ScreenGui")
 local BackGround = Instance.new("Frame")
 local Topbar = Instance.new("Frame")
@@ -11,13 +10,12 @@ local HttpService = game:GetService("HttpService")
 local Mouse = game:GetService("Players").LocalPlayer:GetMouse()
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
 
 if _G.LoaderGui then
-	print("Delect Gui")	
 	_G.LoaderGui:Destroy()
 end
 _G.LoaderGui = MiuHub
-print("Set Gui")
 
 local Method = {
 	Config = {
@@ -26,12 +24,13 @@ local Method = {
 		StrokeColor = Color3.fromRGB(28, 28, 36);
 		BackGroundColor = Color3.fromRGB(33, 35, 47);
 		TapColor = Color3.fromRGB(30, 30, 39);
-		TextColor = Color3.fromRGB(255,255,255);		
+		TextColor = Color3.fromRGB(255,255,255);	
+		Keybind = Enum.KeyCode.RightControl
 	};
 	Pages = {}
 }
 Method.__index = Method
-print("Method")
+
 function Method:CreateNetWorkMark( name )
 	local Methods = {}
 	--// Set Config
@@ -48,16 +47,17 @@ function Method:CreateNetWorkMark( name )
 	
 	BackGround.Name = "BackGround"
 	BackGround.Parent = MiuHub
+	BackGround.AnchorPoint= Vector2.new(.5, .5)
 	BackGround.BackgroundColor3 = Method.Config.BackGroundColor
 	BackGround.BorderSizePixel = 0
-	BackGround.Position = UDim2.new(0.0492957719, 0, 0.0406824164, 0)
+	BackGround.Position = UDim2.new(.5, 0, 0.5, 0)
 	BackGround.Size = UDim2.new(0, 550, 0, 700)
 
 	Topbar.Name = "Topbar"
-	Topbar.Parent = MiuHub
+	Topbar.Parent = BackGround
 	Topbar.BackgroundColor3 = Method.Config.BackGroundColor
 	Topbar.BorderSizePixel = 0
-	Topbar.Position = UDim2.new(0.0492957719, 0, 0.0406824201, 0)
+	Topbar.Position = UDim2.new(-0.002, 0,-0.001, 0)
 	Topbar.Size = UDim2.new(0, 550, 0, 35)
 	Topbar.ZIndex = 10
 
@@ -98,7 +98,46 @@ function Method:CreateNetWorkMark( name )
 	UIListLayout.FillDirection = Enum.FillDirection.Horizontal
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.Padding = UDim.new(0, 25)
-		
+	
+	--// Bind
+
+	UserInputService.InputBegan:Connect(function(input, Procees)
+		if Procees then return end
+		if input.KeyCode == Method.Config.Keybind then
+			if BackGround.Visible then
+				BackGround.Visible = false
+			else
+				BackGround.Visible = true
+			end
+		end
+	end)
+	
+	--// movement
+	local Main = BackGround
+	local Bar = Topbar
+	local Dra
+	local Fra
+	local Draggable = false
+	Bar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			Draggable = true
+			Dra = Vector2.new(input.Position.X, input.Position.Y)
+			Fra = Vector2.new(Main.Position.X.Scale, Main.Position.Y.Scale)
+		end
+	end)
+	Bar.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			Draggable = false
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if Draggable == true then
+			local NewPosition = Fra + ((Vector2.new(input.Position.X, input.Position.Y) - Dra)/ Camera.ViewportSize)
+			Main.Position = UDim2.new(NewPosition.X, 0 , NewPosition.Y, 0)
+			
+		end
+	end)
+	
 	-- Functions
 	
 	function Methods:CreatePage( Text )
@@ -131,11 +170,11 @@ function Method:CreateNetWorkMark( name )
 		Page.TextSize = 15.000
 
 		Screens.Name = "Screens"
-		Screens.Parent = MiuHub
+		Screens.Parent = BackGround
 		Screens.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		Screens.BackgroundTransparency = 1.000
 		Screens.BorderSizePixel = 0
-		Screens.Position = UDim2.new(0.0547730811, 0, 0.103674538, 0)
+		Screens.Position = UDim2.new(0.011, 0,0.068, 0)
 		Screens.Size = UDim2.new(0, 535, 0, 645)
 
 		UITableLayout.Parent = Screens
@@ -362,7 +401,7 @@ function Method:CreateNetWorkMark( name )
 				return Toggles
 			end
 			
-			function Taps:AddDropDown(Table, Default, MultiSelection, CallBack)
+			function Taps:AddDropDown(Table, Default , MultiSelection, CallBack)
 				local DropDowns = {}
 				
 				table.insert(Taps["Functions"], self)
@@ -482,7 +521,7 @@ function Method:CreateNetWorkMark( name )
 				local Tablenow = {}
 				
 				local function ColorButton( Select )
-					for _, buttonz  in pairs(SelectionTable:GetChildren()) do
+					for _, buttonz in pairs(SelectionTable:GetChildren()) do
 						if buttonz:IsA("TextButton") then
 							if table.find( Multi, buttonz.Name) or buttonz.Name == Select then
 									buttonz.BackgroundColor3 = Color3.fromRGB(80, 88, 115)
@@ -539,7 +578,7 @@ function Method:CreateNetWorkMark( name )
 					Return(value)
 				end
 				function	DropDowns:SetTable(newtable)
-					for _, ButtonT  in pairs(Buttons) do
+					for _, ButtonT in pairs(Buttons) do
 						if ButtonT:IsA("TextButton") then
 							ButtonT:Destroy()
 						end
@@ -574,7 +613,7 @@ function Method:CreateNetWorkMark( name )
 				return DropDowns
 			end
 			
-			function Taps:AddSlider(Text, Min , Default, Max, decimals, Callback)
+			function Taps:AddSlider(Text, Min , Default, Max , decimals, Callback)
 				local Sliders = {}
 				
 				local Slide = Instance.new("Frame")
