@@ -1,5 +1,5 @@
 
-if not syn then game:GetService("Players").LocalPlayer:Kick("[ Request : Synapse X ]") return end
+--if not syn then game:GetService("Players").LocalPlayer:Kick("[ Request : Synapse X ]") return end
 
 --// CreateFolder Main
 makefolder("Miu Hub [Premiun Scripts]")
@@ -122,7 +122,7 @@ end
 
 function AccaptQuest(Call)
 pcall(function()
-TP(game:GetService("Workspace").NPCS:FindFirstChild(Call).PrimaryPart.CFrame)
+TP(  (game:GetService("Workspace").NPCS:FindFirstChild(Call).PrimaryPart.CFrame * CFrame.new(0, -6, 2))*CFrame.Angles(math.rad(90), 0, 0)   )
 print("accapt")
 local A_1 = game:GetService("Workspace").NPCS:FindFirstChild(Call)
 local Event = game:GetService("ReplicatedStorage").Remote.Quest.Quest
@@ -221,39 +221,24 @@ function GetQuest()
         TargetCFrame = CFrame.new(2015.7393798828125, 144.85101318359375, 1637.25)
         Island = "Becky Island"
         Target = "Clown Pirates [Lv.150+]"
-        elseif Level.Value >= 250 and Level.Value < 275 then
+        elseif Level.Value >= 250 and Level.Value < 300 then
         NPC = "Quest Fishman"
         TargetCFrame = CFrame.new(5097.53271484375, 144.84658813476562, -2299.5673828125)
         Spawn = CFrame.new(5030.6171875, 144.8508758544922, -2361.2080078125)
         Island = "Arlong Park"
         Target = "Fishman [Lv.250+]"
-        elseif Level.Value >= 275 and Level.Value < 350 then
+        elseif Level.Value >= 300 and Level.Value < 350 then
         NPC = "Quest IcebergThief"
-        Spawn = "Baratie"
-        TargetCFrame = CFrame.new(5097.53271484375, 144.84658813476562, -2299.5673828125)
-       Spawn = CFrame.new(5030.6171875, 144.8508758544922, -2361.2080078125)
-        Island = "Arlong Park"
+        TargetCFrame = CFrame.new(3994.59619140625, 144.85101318359375, 784.6468505859375)
+        Spawn = CFrame.new(3941.554931640625, 144.85101318359375, 815.181884765625)
+        Island = "Snow Island"
         Target = "Iceberg Thief [Lv.300+]"
-        elseif Level.Value >= 350 and Level.Value < 400 then
+        elseif Level.Value >= 350 and Level.Value < math.huge then
         NPC = "Quest SnowRabbit"
-        Spawn = "Baratie"
         TargetCFrame = CFrame.new(4025.4453125, 145.41944885253906, 851.03564453125)
-        Spawn = CFrame.new(3938.9287109375, 144.85101318359375, 817.7640991210938)
+        Spawn = CFrame.new(3941.129638671875, 144.85101318359375, 815.5155029296875)
         Island = "Snow Island"
         Target = "Snow Rabbit [Lv.350+]"
-        elseif Level.Value >= 400 and Level.Value < 450 then
-        NPC = "Quest Revolutionary"
-        Spawn = "Snow Island"
-        TargetCFrame = CFrame.new(6848.162109375, 130.22695922851562, 2194.2353515625)
-        Spawn = CFrame.new(3938.9287109375, 144.85101318359375, 817.7640991210938)
-        Island = "Snow Island"
-        Target = "Revolutionary [Lv.400+]"
-         elseif Level.Value >= 450 and Level.Value < math.huge then
-        NPC = "Quest Rebel"
-        TargetCFrame = CFrame.new(6737.3544921875, 130.05331420898438, 2172.417724609375)
-        Target = "Rebel [Lv.450+]"
-        Spawn = CFrame.new(3938.9287109375, 144.85101318359375, 817.7640991210938)
-        Island = "Snow Island"
     end
 end
 
@@ -329,7 +314,9 @@ local Functions = {
 		_G.Config.SelectTool = Callback
 		Save()
 	end);
-	
+	["Refresh"] = Taps.ServerStats:AddButton("Refresh", function()
+	   
+	end);
 	["Select Stats"] = Taps.ConfigFarm:AddDropDown({ "Vitality", "Strength", "Agility", "Intelligence" }, ( _G.Config.SelectStsts or "" ), true, function(Callback)
 		_G.Config.SelectStsts = Callback
 		Save()
@@ -397,11 +384,13 @@ local Functions = {
 
 --// Funtion Scripts
 
-    game:GetService("Players").Changed:Connect(function()
-	    Functions.PlayersCount:Set(#game:GetService("Players"):GetChildren())
-    end)
-
-
+    function UpdateStatus()
+	 Functions.PlayersCount:Set(#game:GetService("Players"):GetChildren())
+    end
+    
+    game:GetService("Players").PlayerAdded:Connect(UpdateStatus)
+	game:GetService("Players").PlayerRemoving:Connect(UpdateStatus)
+	
     task.defer(function()
     while wait() do
         if _G.Config.AutoBoss then
