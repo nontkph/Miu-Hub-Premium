@@ -20,7 +20,7 @@ _G.LoaderGui = MiuHub
 local PageSet = nil
 local Method = {
 	Config = {
-		Color1 = Color3.fromRGB(255, 37, 110);
+		Color1 = Color3.fromRGB(255, 10, 110);
 		Color2 = Color3.fromRGB(64, 31, 86);
 		StrokeColor = Color3.fromRGB(28, 28, 36);
 		BackGroundColor = Color3.fromRGB(33, 35, 47);
@@ -57,6 +57,20 @@ function Method:CreateNetWorkMark( name )
 		MiuHub.Parent = game:GetService("Players").LocalPlayer.PlayerGui
 	else
 		MiuHub.Parent = game:GetService("CoreGui")
+	end
+	
+	local WhiteScreen = Instance.new("Frame")
+
+	WhiteScreen.Name = "WhiteScreen"
+	WhiteScreen.Parent = game.StarterGui["DE3E6AF5-40A2-457E-AB53-72415ED6BF72"]
+	WhiteScreen.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	WhiteScreen.BorderSizePixel = 0
+	WhiteScreen.Size = UDim2.new(1, 0, 1, 0)
+	WhiteScreen.Visible = false
+	WhiteScreen.ZIndex = 0
+	
+	function Methods:WhiteScreen(Type)
+		WhiteScreen.Visible = Type
 	end
 
 	BackGround.Name = "BackGround"
