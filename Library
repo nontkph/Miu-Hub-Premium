@@ -62,7 +62,7 @@ function Method:CreateNetWorkMark( name )
 	local WhiteScreen = Instance.new("Frame")
 
 	WhiteScreen.Name = "WhiteScreen"
-	WhiteScreen.Parent = game.StarterGui["DE3E6AF5-40A2-457E-AB53-72415ED6BF72"]
+	WhiteScreen.Parent =MiuHub
 	WhiteScreen.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	WhiteScreen.BorderSizePixel = 0
 	WhiteScreen.Size = UDim2.new(1, 0, 1, 0)
