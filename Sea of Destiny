@@ -123,11 +123,9 @@ end
 function AccaptQuest(Call)
 pcall(function()
 TP(  (game:GetService("Workspace").NPCS:FindFirstChild(Call).PrimaryPart.CFrame * CFrame.new(0, -6, 2))*CFrame.Angles(math.rad(90), 0, 0)   )
-print("accapt")
 local A_1 = game:GetService("Workspace").NPCS:FindFirstChild(Call)
 local Event = game:GetService("ReplicatedStorage").Remote.Quest.Quest
 Event:InvokeServer(A_1)
-print("end")
     end)
 end
 
@@ -314,7 +312,6 @@ local Functions = {
 		_G.Config.SelectTool = Callback
 		Save()
 	end);
-
 	["Select Stats"] = Taps.ConfigFarm:AddDropDown({ "Vitality", "Strength", "Agility", "Intelligence" }, ( _G.Config.SelectStsts or "" ), true, function(Callback)
 		_G.Config.SelectStsts = Callback
 		Save()
@@ -373,11 +370,14 @@ local Functions = {
 	end);
 };
  
+    Taps.ConfigFarm:AddButton("Refresh", function()
+	    Functions["SelectTool_"]:SetTable(ScanTools())
+	end);
+ 
     task.wait(1)
     warn(string.format( "Loading Succeed!" ))
 ------------------------------------------------------| Gui End
------------------------------------------------------------------------------
-
+----------------------------------------------------------------------------
 
 
 --// Funtion Scripts
