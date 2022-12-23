@@ -51,13 +51,13 @@ function Method:CreateNetWorkMark( name )
 	MiuHub.DisplayOrder = 1000000
 	MiuHub.IgnoreGuiInset = true
 	MiuHub.ResetOnSpawn = false
-	
+
 	if RunService:IsStudio() then
 		MiuHub.Parent = game:GetService("Players").LocalPlayer.PlayerGui
 	else
 		MiuHub.Parent = game:GetService("CoreGui")
 	end
-	
+
 	BackGround.Name = "BackGround"
 	BackGround.Parent = MiuHub
 	BackGround.AnchorPoint= Vector2.new(.5, .5)
@@ -97,7 +97,7 @@ function Method:CreateNetWorkMark( name )
 
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Method.Config.Color1), ColorSequenceKeypoint.new(1.00, Method.Config.Color2)}
 	UIGradient.Parent = Line
-	
+
 	Slide.Name = "Slide"
 	Slide.Parent = Topbar
 	Slide.BackgroundColor3 = Color3.fromRGB(255,255,255)
@@ -109,12 +109,12 @@ function Method:CreateNetWorkMark( name )
 	Slide.CanvasSize = UDim2.new(0,0, 0, 0)
 	Slide.AutomaticCanvasSize = Enum.AutomaticSize.X
 	Slide.ScrollBarThickness = 0
-	
+
 	UIListLayout.Parent = Slide
 	UIListLayout.FillDirection = Enum.FillDirection.Horizontal
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.Padding = UDim.new(0, 25)
-	
+
 	--// Bind
 
 	UserInputService.InputBegan:Connect(function(input, Procees)
@@ -127,7 +127,7 @@ function Method:CreateNetWorkMark( name )
 			end
 		end
 	end)
-	
+
 	--// movement
 	local Main = BackGround
 	local Bar = Topbar
@@ -150,12 +150,12 @@ function Method:CreateNetWorkMark( name )
 		if Draggable == true then
 			local NewPosition = Fra + ((Vector2.new(input.Position.X, input.Position.Y) - Dra)/ Camera.ViewportSize)
 			Main.Position = UDim2.new(NewPosition.X, 0 , NewPosition.Y, 0)
-			
+
 		end
 	end)
-	
+
 	-- Functions
-	
+
 	function Methods:CreatePage( Text  )
 		local PageMethod = {}
 
@@ -169,14 +169,14 @@ function Method:CreateNetWorkMark( name )
 		local UIListLayout_4 = Instance.new("UIListLayout")
 		local UIPadding_3 = Instance.new("UIPadding")
 		local UIPadding_4 = Instance.new("UIPadding")
-		
+
 		Method.Pages[Page] = Screens
-		
+
 		Page.MouseButton1Click:Connect(function()
 			PageSet = Page
 			SwitchPage()
 		end)
-		
+
 		Page.Name = Text
 		Page.Parent = Slide
 		Page.AutomaticSize = Enum.AutomaticSize.XY
@@ -252,7 +252,7 @@ function Method:CreateNetWorkMark( name )
 		UIPadding_4.Parent = Screens
 		UIPadding_4.PaddingLeft = UDim.new(0, 1)
 		UIPadding_4.PaddingRight = UDim.new(0, 1)
-		
+
 		--// Page Config
 		if not PageSet then
 			PageSet = Page
@@ -261,7 +261,7 @@ function Method:CreateNetWorkMark( name )
 			SwitchPage()
 			Screens.Visible = false
 		end
-		
+
 		--Function Page
 		function PageMethod:CreateTap(Text , Side )
 			local Taps = {}
@@ -271,14 +271,32 @@ function Method:CreateNetWorkMark( name )
 			local Functions = Instance.new("Frame")
 			local UIListLayoutTap = Instance.new("UIListLayout")
 			local UIPadding_2 = Instance.new("UIPadding")
+			local LineTap = Instance.new("Frame")
+			local UIGradientLine = Instance.new("UIGradient")
+			local Stroke = Instance.new("UIStroke")
 			
 			Tap.Name = Text
-			
+
 			if Side == "Left" then
 				Tap.Parent = Left
 			elseif Side == "Right" then
 				Tap.Parent = Right
 			end
+			
+			LineTap.Name = "Line"
+			LineTap.Size = UDim2.new(1, 0 ,0 ,2)
+			LineTap.BorderSizePixel = 0
+			LineTap.Parent = Tap
+			LineTap.BackgroundColor3 = Color3.fromRGB(255,255,255)
+			LineTap.Position = UDim2.new(0 ,0, 0 ,-1)
+			
+			Stroke.Parent = Title_2
+			
+			UIGradientLine.Parent = LineTap
+			UIGradientLine.Color = ColorSequence.new{
+				ColorSequenceKeypoint.new(0, Method.Config.Color1);
+				ColorSequenceKeypoint.new(1, Method.Config.Color2)
+			}
 			
 			Tap.Active = true
 			Tap.BackgroundColor3 = Method.Config.TapColor
@@ -294,6 +312,7 @@ function Method:CreateNetWorkMark( name )
 			Title_2.Size = UDim2.new(0, 225, 0, 15)
 			Title_2.Font = Enum.Font.SourceSans
 			Title_2.Text = Text
+			Title_2.ZIndex = 10
 			Title_2.TextColor3 = Method.Config.TextColor
 			Title_2.TextSize = 15.000
 			Title_2.TextXAlignment = Enum.TextXAlignment.Left
@@ -326,15 +345,15 @@ function Method:CreateNetWorkMark( name )
 						sizeright = (sizeright + v.AbsoluteSize.Y)
 					end
 				end
-				
+
 				Left.CanvasSize = UDim2.fromOffset(Left.AbsoluteSize.X, sizeleft + ((#Left:GetChildren() - 2) * UIListLayout_2.Padding.Offset) )
 				Right.CanvasSize =  UDim2.fromOffset(Right.AbsoluteSize.X, sizeright + ((#Right:GetChildren() - 2) * UIListLayout_4.Padding.Offset) )
 			end
-			
+
 			--Functions
 			function Taps:AddLabel(Text )
 				local Labels = {}
-				
+
 				table.insert(Taps["Functions"], self)
 				local Label = Instance.new("TextLabel")
 				Label.Name = Text
@@ -350,7 +369,7 @@ function Method:CreateNetWorkMark( name )
 				Label.TextSize = 15.000
 				Label.TextXAlignment = Enum.TextXAlignment.Left
 				Label.Text = Text
-				
+
 				function Labels:Set(Text )
 					Label.Text = tostring(Text)
 				end
@@ -359,7 +378,7 @@ function Method:CreateNetWorkMark( name )
 				Label.LayoutOrder = #Taps["Functions"]
 				return Labels
 			end
-			
+
 			function Taps:AddToggle(Text , Default , Callback)
 				local Toggles = {}
 				table.insert(Taps["Functions"], self)
@@ -401,14 +420,14 @@ function Method:CreateNetWorkMark( name )
 				UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(113, 21, 55)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(154, 22, 65))}
 				UIGradient_2.Rotation = -90
 				UIGradient_2.Parent = ColorButton
-				
+
 				-- Function
 				local function retuen(Type )
 					if typeof(Type) ~= "boolean" then return end
 					ColorButton.Visible = Type
 					return Callback(Type)
 				end
-				
+
 				local function ToggleFunction()
 					if ColorButton.Visible then
 						retuen(false)
@@ -416,35 +435,35 @@ function Method:CreateNetWorkMark( name )
 						retuen(true)
 					end
 				end
-				
+
 				Title_Toggle.InputBegan:Connect(function(input, Process)
 					if Process then return end
 					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						ToggleFunction()
 					end
 				end)
-				
+
 				Toggle.MouseButton1Click:Connect(ToggleFunction)
-									
+
 				--// Call first
 				retuen(Default)
-				
+
 				task.wait(.1)
 				ReSize()
 				Toggle.LayoutOrder = #Taps["Functions"]
 				return Toggles
 			end
-			
+
 			function Taps:AddDropDown(Table , Default , MultiSelection, CallBack)
 				local DropDowns = {}
-				
+
 				table.insert(Taps["Functions"], self)
 				local DropDown = Instance.new("TextButton")
 				local Title = Instance.new("TextLabel")
 				local marking = Instance.new("TextLabel")
 				local SelectionTable = Instance.new("ScrollingFrame")
 				local UIGridLayout_Selecton = Instance.new("UIGridLayout")
-				
+
 				DropDown.Name = "DropDown"
 				DropDown.Parent = Functions
 				DropDown.BackgroundColor3 = Color3.fromRGB(39, 42, 56)
@@ -464,7 +483,6 @@ function Method:CreateNetWorkMark( name )
 				Title.Size = UDim2.new(0, 35, 0, 10)
 				Title.ZIndex = 2
 				Title.Font = Enum.Font.SourceSans
-				Title.Text = Default
 				Title.TextColor3 = Method.Config.TextColor
 				Title.TextSize = 15.000
 				Title.TextXAlignment = Enum.TextXAlignment.Left
@@ -503,7 +521,7 @@ function Method:CreateNetWorkMark( name )
 				UIGridLayout_Selecton.SortOrder = Enum.SortOrder.LayoutOrder
 				UIGridLayout_Selecton.CellPadding = UDim2.new(0, 0, 0, 2.5)
 				UIGridLayout_Selecton.CellSize = UDim2.new(1, 0, 0, 20)
-				
+
 				local Multi = {}
 				local function Return(Select )
 					if MultiSelection then
@@ -517,9 +535,10 @@ function Method:CreateNetWorkMark( name )
 							table.insert(Multi, Select)
 						end
 						local StringTable = string.gsub( string.gsub(HttpService:JSONEncode(Multi), "{", ""), "}", "" ) 
-						
+
 						local ToString = ""
 						for num, text in pairs(Multi) do
+							print(num, text)
 							if text ~= "" then
 								ToString = ToString..string.format("%s,", text)
 							end
@@ -531,7 +550,7 @@ function Method:CreateNetWorkMark( name )
 						return CallBack(Select)
 					end
 				end
-				
+
 				DropDown.MouseButton1Click:Connect(function()
 					if SelectionTable.Visible then
 						SelectionTable.Visible = false
@@ -541,7 +560,7 @@ function Method:CreateNetWorkMark( name )
 						marking.Text = "◄"
 					end
 				end)
-				
+
 				local function fixsize()
 					local offsetsize = 0
 					for i, v in pairs(SelectionTable:GetChildren()) do
@@ -552,10 +571,10 @@ function Method:CreateNetWorkMark( name )
 
 					SelectionTable.CanvasSize = UDim2.fromOffset(SelectionTable.AbsoluteSize.X, offsetsize + ((#SelectionTable:GetChildren() - 1) * UIGridLayout_Selecton.CellPadding.Y.Offset) )
 				end
-				
+
 				local Buttons = {}
 				local Tablenow = {}
-				
+
 				local function ColorButton( Select )
 					if MultiSelection then
 						for _, buttonz  in pairs(SelectionTable:GetChildren()) do
@@ -583,7 +602,7 @@ function Method:CreateNetWorkMark( name )
 						end
 					end
 				end
-				
+
 				local function Refresh( Type )
 					Tablenow = Type
 					for _, v in pairs( Type ) do
@@ -615,21 +634,21 @@ function Method:CreateNetWorkMark( name )
 						Title_2.Text = v
 						Title_2.TextColor3 = Method.Config.TextColor
 						Title_2.TextSize = 15.000
-						
+
 						Button.MouseButton1Click:Connect(function()
 							Return(v)
 							ColorButton(v)
 						end)
-						
+
 					end
 					fixsize()
 				end
 				Refresh(Table)
-				
+
 				function DropDowns:Set(value)
 					Return(value)
 				end
-				function	DropDowns:SetTable(newtable)
+				function DropDowns:SetTable(newtable)
 					for _, ButtonT in pairs(Buttons) do
 						if ButtonT:IsA("TextButton") then
 							ButtonT:Destroy()
@@ -638,36 +657,46 @@ function Method:CreateNetWorkMark( name )
 					Buttons = {}
 					Refresh(newtable)
 				end
-				
+
 				function DropDowns:GetTable()
 					return Tablenow
 				end
-				
+
 				function DropDowns:Add(value)
 					if not table.find(Tablenow, value) then
 						table.insert(Tablenow, value)
 					end
 					Refresh(Tablenow)
 				end
-				
+
 				function DropDowns:Remove(value)
-						if table.find(Tablenow, value) then
-							table.remove(Tablenow, Tablenow[value])
+					if table.find(Tablenow, value) then
+						table.remove(Tablenow, Tablenow[value])
+					end
+					Refresh(Tablenow)
+				end
+
+				task.wait(.1)
+				
+				if MultiSelection then
+					for i, v in pairs(Default) do
+						if v ~= "" then
+							Return(v)
 						end
-						Refresh(Tablenow)
+					end
+				else
+					Return(Default)
 				end
 				
-				task.wait(.1)
-				Return(Default)
 				ReSize()
 				DropDown.LayoutOrder = #Taps["Functions"]
-				
+
 				return DropDowns
 			end
-			
+
 			function Taps:AddSlider(Text , Min , Default , Max , decimals, Callback)
 				local Sliders = {}
-				
+
 				local Slide = Instance.new("Frame")
 				local Title = Instance.new("TextLabel")
 				local SlideBar = Instance.new("Frame")
@@ -728,7 +757,7 @@ function Method:CreateNetWorkMark( name )
 				CallBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 				CallBox.TextSize = 15.000
 				CallBox.TextXAlignment = Enum.TextXAlignment.Right
-				
+
 				local SlideStats = {
 					Down = false;
 					Fire = false;
@@ -748,7 +777,7 @@ function Method:CreateNetWorkMark( name )
 					CallBox.Text = Default
 					return Callback(Default)
 				end
-				
+
 				SlideBar.InputBegan:Connect(function(key, pros)
 					if pros then return end
 					if key.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -757,7 +786,7 @@ function Method:CreateNetWorkMark( name )
 						SlideStats.Down = true
 					end
 				end)
-				
+
 				Mouse.Move:Connect(function()
 					if SlideStats.Down == true then
 						SlideStats.Fire = false
@@ -774,14 +803,14 @@ function Method:CreateNetWorkMark( name )
 				Bar:GetPropertyChangedSignal("Size"):Connect(function()
 					Changed()
 				end)
-				
+
 				UserInputService.InputEnded:Connect(function(input, gp)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						SlideStats.Down = false
 						SlideStats.Fire = false
 					end
 				end)
-				
+
 				CallBox.FocusLost:Connect(function()
 					if typeof(tonumber(CallBox.Text)) == "number" then
 						local num = tonumber(CallBox.Text)
@@ -798,24 +827,25 @@ function Method:CreateNetWorkMark( name )
 					end
 				end)
 
-				
+
 				task.wait(.1)
 				ReSize()
 				local num = tonumber(CallBox.Text)
 				Bar.Size = UDim2.new(0, ((num / Max) * Vector2.new( SlideBar.AbsoluteSize.X, SlideBar.AbsoluteSize.Y).X), 1, 0)
 				Changed()
 				Slide.LayoutOrder = #Taps["Functions"]
-				
+
 				return Sliders
 			end
-			
-			
+
+
 			function Taps:AddButton(Text, Callback)
 				local Buttons = {}
-				
+
 				local Button = Instance.new("TextButton")
 				local Title = Instance.new("TextLabel")
-
+				
+				table.insert(Taps["Functions"], self)
 				Button.Name = Text
 				Button.Parent = Functions
 				Button.BackgroundColor3 = Color3.fromRGB(39, 42, 56)
@@ -840,24 +870,73 @@ function Method:CreateNetWorkMark( name )
 				Title.Text = Text
 				Title.TextColor3 = Method.Config.TextColor
 				Title.TextSize = 15.000
-				
+
 				Button.MouseButton1Click:Connect(function()
 					return Callback()
 				end)
 				
+				function Buttons:SetText(value)
+					Title.Text = value
+				end
+
 				task.wait(.1)
 				ReSize()
 				Button.LayoutOrder = #Taps["Functions"]
-				
+
 				return Buttons
 			end
-		
+			
+			function Taps:AddTextBox( PlaceholderText, Default, ClearText, Callback )
+				local TextBoxs = {}
+				
+				local TextBox = Instance.new("TextBox")
+				
+				table.insert(Taps["Functions"], self)
+				TextBox.Parent = Functions
+				TextBox.BackgroundColor3 = Color3.fromRGB(39, 42, 56)
+				TextBox.BorderColor3 = Color3.fromRGB(28, 28, 36)
+				TextBox.Size = UDim2.new(1, 0, 0, 20)
+				TextBox.Font = Enum.Font.SourceSans
+				TextBox.PlaceholderColor3 = Color3.fromRGB(102, 102, 102)
+				TextBox.Text = Default
+				TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+				TextBox.TextSize = 14.000
+				TextBox.ClearTextOnFocus = ClearText or true
+				TextBox.PlaceholderText = PlaceholderText
+				
+				local function Return(Text)
+					TextBox.Text = Text
+					return Callback(Text)
+				end
+				
+				TextBox.FocusLost:Connect(function()
+					Return(TextBox.Text)
+				end)
+				
+				function TextBoxs:Set(value)
+					Return(value)
+				end
+				
+				function TextBoxs:SetDefault()
+					Return(Default)
+				end
+				
+				Return(Default)
+				task.wait(.1)
+				ReSize()
+				TextBox.LayoutOrder = #Taps["Functions"]
+				
+				return TextBoxs
+			end
+			
+			
+
 			return Taps
 		end
-		
+
 		return PageMethod
 	end
-	
+
 	return Methods
 end
 
