@@ -46,6 +46,7 @@ end
 
 function Method:CreateNetWorkMark( name )
 	local Methods = {}
+	Methods.__index = Methods
 	--// Set Config
 	MiuHub.Name = string.gsub( string.gsub(HttpService:GenerateGUID(true), "{", ""), "}", "" )
 	MiuHub.DisplayOrder = 1000000
@@ -158,7 +159,7 @@ function Method:CreateNetWorkMark( name )
 
 	function Methods:CreatePage( Text  )
 		local PageMethod = {}
-
+		PageMethod.__index = PageMethod
 		local Page = Instance.new("TextButton")
 		local Screens = Instance.new("Frame")
 		local UITableLayout = Instance.new("UITableLayout")
@@ -265,6 +266,7 @@ function Method:CreateNetWorkMark( name )
 		--Function Page
 		function PageMethod:CreateTap(Text , Side )
 			local Taps = {}
+			Taps.__index = Taps
 			Taps["Functions"] = {}
 			local Tap = Instance.new("Frame")
 			local Title_2 = Instance.new("TextLabel")
@@ -353,7 +355,7 @@ function Method:CreateNetWorkMark( name )
 			--Functions
 			function Taps:AddLabel(Text )
 				local Labels = {}
-
+				Labels.__index = Labels
 				table.insert(Taps["Functions"], self)
 				local Label = Instance.new("TextLabel")
 				Label.Name = Text
@@ -381,6 +383,7 @@ function Method:CreateNetWorkMark( name )
 
 			function Taps:AddToggle(Text , Default , Callback)
 				local Toggles = {}
+				Toggles.__index = Toggles
 				table.insert(Taps["Functions"], self)
 
 				local Toggle = Instance.new("TextButton")
@@ -456,7 +459,7 @@ function Method:CreateNetWorkMark( name )
 
 			function Taps:AddDropDown(Table , Default , MultiSelection, CallBack)
 				local DropDowns = {}
-
+				DropDowns.__index = DropDowns
 				table.insert(Taps["Functions"], self)
 				local DropDown = Instance.new("TextButton")
 				local Title = Instance.new("TextLabel")
@@ -554,10 +557,10 @@ function Method:CreateNetWorkMark( name )
 				DropDown.MouseButton1Click:Connect(function()
 					if SelectionTable.Visible then
 						SelectionTable.Visible = false
-						marking.Text = "▼"
+						marking.Text = "◄"
 					else
 						SelectionTable.Visible = true
-						marking.Text = "◄"
+						marking.Text = "▼"
 					end
 				end)
 
@@ -696,7 +699,7 @@ function Method:CreateNetWorkMark( name )
 
 			function Taps:AddSlider(Text , Min , Default , Max , decimals, Callback)
 				local Sliders = {}
-
+				Sliders.__index = Sliders
 				local Slide = Instance.new("Frame")
 				local Title = Instance.new("TextLabel")
 				local SlideBar = Instance.new("Frame")
@@ -841,7 +844,7 @@ function Method:CreateNetWorkMark( name )
 
 			function Taps:AddButton(Text, Callback)
 				local Buttons = {}
-
+				Buttons.__index = Buttons
 				local Button = Instance.new("TextButton")
 				local Title = Instance.new("TextLabel")
 				
@@ -888,7 +891,7 @@ function Method:CreateNetWorkMark( name )
 			
 			function Taps:AddTextBox( PlaceholderText, Default, ClearText, Callback )
 				local TextBoxs = {}
-				
+				TextBoxs.__index = TextBoxs
 				local TextBox = Instance.new("TextBox")
 				
 				table.insert(Taps["Functions"], self)
