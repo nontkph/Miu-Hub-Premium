@@ -314,9 +314,7 @@ local Functions = {
 		_G.Config.SelectTool = Callback
 		Save()
 	end);
-	["Refresh"] = Taps.ServerStats:AddButton("Refresh", function()
-	   
-	end);
+
 	["Select Stats"] = Taps.ConfigFarm:AddDropDown({ "Vitality", "Strength", "Agility", "Intelligence" }, ( _G.Config.SelectStsts or "" ), true, function(Callback)
 		_G.Config.SelectStsts = Callback
 		Save()
