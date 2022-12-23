@@ -23,6 +23,7 @@ _G.Config = {
   SelectStsts = {};
   AutoStats = false;
   instant = false;
+  AutoGrabFruits = false;
 };
 local Path = string.format("Miu Hub [Premiun Scripts]/Sea of Destiny/[%s][%s].txt", game:GetService("Players").LocalPlayer.Name ,game:GetService("Players").LocalPlayer.UserId)
 function Save()
@@ -99,8 +100,12 @@ function TP(P1)
 				end
 				repeat 
 				    task.wait(.001)
-				until (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 or _G.Config.AutoLevel == false and _G.Config.AutoBoss == false
+				    setfflag("HumanoidParallelRemoveNoPhysics", "False")
+                    setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
+                    game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(11)
+				until (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 or not Tween
 				Tween:Cancel()
+				Tween = nil
 				task.wait(.5)
 			end
 		end
@@ -176,7 +181,10 @@ local Taps = {
 	["AutoBoss"] = Pages.AutoFarms:CreateTap("💀 : Auto Boss", "Left");
     ["ServerStats"] = Pages.AutoFarms:CreateTap("️🌐 : Server Stats", "Right");	
 	--// Visulas
-
+    ["Other"] = Pages.Visulas:CreateTap("🧩 : Other", "Left");
+ 
+    --// Teleport
+    ["TeleportIsland"] = Pages.Teleport:CreateTap("️🌟 : Teleport to Island(s)", "Right");	
 };
 
 --[ Tables ]
@@ -368,7 +376,40 @@ local Functions = {
     }
     game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer, teleportData)
 	end);
+	
+	--// Visulas
+	["GrabFruits"] = Taps.Other:AddButton("🍎 : Grab Fruits", function(Callback)
+	    for _, fruits in pairs(game:GetService("Workspace").Other.Fruits:GetChildren()) do
+	        if fruits:IsA("Tool") then
+	           game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(fruits)
+	       end
+	   end
+	end);
+	["GrabFruitsToggle"] = Taps.Other:AddToggle("🍎 : Auto Grab Fruits",_G.AutoGrabFruits or false ,function(Callback)
+	    _G.AutoGrabFruits = Callback
+	    Save()
+	   if Callback == true then
+	        local function Checking()
+	        for _, fruits in pairs(game:GetService("Workspace").Other.Fruits:GetChildren()) do
+	            if fruits:IsA("Tool") then
+	                game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(fruits)
+	            end
+	        end
+	    end
+	    
+	    Checking()
+	    game:GetService("Workspace").Other.Fruits.ChildAdded:Connect(Checking)
+        end
+	end);
 };
+ 
+    for num, Parts in pairs(game:GetService("Workspace").Other.Spawn:GetChildren()) do
+        if Parts:IsA("BasePart") then
+            Functions[Parts.Name] = Taps.TeleportIsland:AddButton( string.format("[🎄] %s", Parts.Name), function()
+                TP(Parts.CFrame * CFrame.new(0, 3, 0))
+            end)
+        end
+    end
  
     Taps.ConfigFarm:AddButton("Refresh", function()
 	    Functions["SelectTool_"]:SetTable(ScanTools())
