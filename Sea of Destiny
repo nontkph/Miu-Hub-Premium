@@ -383,7 +383,7 @@ local Functions = {
 --// Funtion Scripts
 
     function UpdateStatus()
-	 Functions.PlayersCount:Set(#game:GetService("Players"):GetChildren())
+	 Functions.PlayersCount:Set(string.format("🙃 : Player(s)      | %s", #game:GetService("Players"):GetChildren()))
     end
     
     game:GetService("Players").PlayerAdded:Connect(UpdateStatus)
