@@ -325,7 +325,7 @@ local Functions = {
 		_G.Config.AutoStats = Callback
 		Save()
 	end);
-	["Distance"] = Taps.ConfigFarm:AddSlider("Distance", 0, 6, 15, _G.Config.Distance, function(Callback)
+	["Distance"] = Taps.ConfigFarm:AddSlider("Distance", 0, (_G.Config.Distance or 6), 15, true, function(Callback)
 		_G.Config.Distance = Callback
 		Save()
 	end);
