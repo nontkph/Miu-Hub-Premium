@@ -100,13 +100,13 @@ function TP(P1)
 				end
 				repeat 
 				    task.wait(.001)
-				    setfflag("HumanoidParallelRemoveNoPhysics", "False")
-                    setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
-                    game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(11)
-				until (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 or not Tween
+				until (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 or not Tween and _G.Config.AutoLevel == false and _G.AutoBoss == false 
 				Tween:Cancel()
 				Tween = nil
 				task.wait(.5)
+			if Tween then
+			    	Tween = nil
+			    end
 			end
 		end
 
@@ -298,6 +298,19 @@ for name, tables in pairs(BossTable) do
 	table.insert(BossName, name)
 end
 
+local function Checking()
+    print("auto grab")
+    if _G.Config.AutoGrabFruits then
+        print('grab')
+	    for _, fruits in pairs(game:GetService("Workspace").Other.Fruits:GetChildren()) do
+	        if fruits:IsA("Tool") then
+	          game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(fruits)
+	       end
+	    end
+	end
+end
+game:GetService("Workspace").Other.Fruits.ChildAdded:Connect(Checking)
+
 --[ Functions ]
 
 local Functions = {
@@ -385,20 +398,11 @@ local Functions = {
 	       end
 	   end
 	end);
-	["GrabFruitsToggle"] = Taps.Other:AddToggle("🍎 : Auto Grab Fruits",_G.AutoGrabFruits or false ,function(Callback)
-	    _G.AutoGrabFruits = Callback
+	["GrabFruitsToggle"] = Taps.Other:AddToggle("🍎 : Auto Grab Fruits",( _G.AutoGrabFruits ) ,function(Callback)
+	    _G.Config.AutoGrabFruits = Callback
 	    Save()
-	   if Callback == true then
-	        local function Checking()
-	        for _, fruits in pairs(game:GetService("Workspace").Other.Fruits:GetChildren()) do
-	            if fruits:IsA("Tool") then
-	                game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(fruits)
-	            end
-	        end
-	    end
-	    
-	    Checking()
-	    game:GetService("Workspace").Other.Fruits.ChildAdded:Connect(Checking)
+	   if Callback then
+	       Checking()
         end
 	end);
 };
@@ -560,7 +564,7 @@ end)
 
 task.defer(function()
     game:GetService("RunService").Heartbeat:Connect(function()
-        if _G.Config.AutoLevel or _G.Config.AutoBoss then
+        if _G.Config.AutoLevel or _G.Config.AutoBoss or Tween then
         if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid") then
             setfflag("HumanoidParallelRemoveNoPhysics", "False")
             setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
