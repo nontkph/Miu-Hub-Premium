@@ -1,0 +1,14 @@
+function CheckingGame(Id)
+    if Id == 9542890083 then
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/nontkph/MiuHubPremium/main/Sea%20of%20Destiny'))()
+        return
+    elseif Id == 11233292886 then
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/nontkph/Library/main/Xin%20Town'))()
+        return
+    end
+    
+    game:GetService("Players").LocalPlayer:Kick("[ Scripts are not supported in this game !! ]")
+end
+
+
+CheckingGame(game.PlaceId)
