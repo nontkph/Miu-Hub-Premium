@@ -1,0 +1,544 @@
+
+if not syn then game:GetService("Players").LocalPlayer:Kick("[ Request : Synapse X ]") return end
+
+--// CreateFolder Main
+makefolder("Miu Hub [Premiun Scripts]")
+
+--// Anti AFK
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+    game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+end)
+
+--// Opction
+local IsLoad = false
+_G.Config = {
+  AutoLevel = false;
+  AutoQuest = true;
+  SafeMode = false;
+  SelectTool = "[ Select Tool ]";
+  Distance = 5;
+  SelectBoss = "";
+  AutoBoss = false;
+  AutoBossQuest = false;
+  SelectStsts = {};
+  AutoStats = false;
+  instant = false;
+};
+local Path = string.format("Miu Hub [Premiun Scripts]/Sea of Destiny/[%s][%s].txt", game:GetService("Players").LocalPlayer.Name ,game:GetService("Players").LocalPlayer.UserId)
+function Save()
+    writefile(Path, game:GetService("HttpService"):JSONEncode(_G.Config))
+end
+
+function Loading()
+    --// GetPath
+    makefolder("Miu Hub [Premiun Scripts]/Sea of Destiny")
+    --// Check file
+     if not isfile(Path) then
+         print("new file")
+        writefile(Path, game:GetService("HttpService"):JSONEncode(_G.Config))
+     end
+     print("[Miu Hub] : Loading Save...")
+    --// Load table
+    local File = readfile(Path) 
+    _G.Config = game:GetService("HttpService"):JSONDecode(File)
+    task.wait(1)
+    IsLoad = true
+end
+
+repeat task.wait() until game:IsLoaded()
+Loading()
+-----------------------------------------------------------------------------
+------------------------------------------------------| Functions
+
+ function Rejoin_F()
+          game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer) 
+    end
+
+function Hopping()
+       local Player = game.Players.LocalPlayer    
+local Http = game:GetService("HttpService")
+local TPS = game:GetService("TeleportService")
+local Api = "https://games.roblox.com/v1/games/"
+
+local _place,_id = game.PlaceId, game.JobId
+local _servers = Api.._place.."/servers/Public?sortOrder=Desc&limit=100"
+function ListServers(cursor)
+   local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+   return Http:JSONDecode(Raw)
+end
+
+local Next; repeat
+   local Servers = ListServers(Next)
+   for i,v in next, Servers.data do
+       if v.playing < v.maxPlayers and v.id ~= _id then
+           local s,r = pcall(TPS.TeleportToPlaceInstance,TPS,_place,v.id,Player)
+           if s then break end
+       end
+   end
+   
+   Next = Servers.nextPageCursor
+until not Next
+       end
+
+function TP(P1)
+			if not _G.Stop_Tween then
+				local Distance = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+				Speed = 100
+				if Distance < 250 then
+					Speed = 5000
+				elseif Distance < 500 then
+					Speed = 650
+				elseif Distance < 1000 then
+					Speed = 350
+				elseif Distance >= 1000 then
+					Speed = 250
+				end
+				Tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),{CFrame = P1})
+				if game.Players.LocalPlayer.Character.Humanoid.Health > 0 then
+					Tween:Play()
+				end
+				repeat 
+				    task.wait(.001)
+				until (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 5 or _G.Config.AutoLevel == false and _G.Config.AutoBoss == false
+				Tween:Cancel()
+				task.wait(.5)
+			end
+		end
+
+function Click()
+  game:GetService'VirtualUser':CaptureController()
+    game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 672))		
+end
+
+function ScanTools()
+    Table = {}
+    for _, Tools in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do task.wait()
+        if Tools:IsA("Tool") then
+            Table[Tools.Name] = Tools.Name
+        end
+    end
+    return Table
+end
+
+function AccaptQuest(Call)
+pcall(function()
+TP(game:GetService("Workspace").NPCS:FindFirstChild(Call).PrimaryPart.CFrame)
+print("accapt")
+local A_1 = game:GetService("Workspace").NPCS:FindFirstChild(Call)
+local Event = game:GetService("ReplicatedStorage").Remote.Quest.Quest
+Event:InvokeServer(A_1)
+print("end")
+    end)
+end
+
+function SetSpawn()
+task.wait(.5)
+local A_1 = game:GetService("Workspace").NPCS["SET SPAWN"]
+local Event = game:GetService("ReplicatedStorage").Remote.Other.SetSpawn
+Event:FireServer(A_1)
+end
+
+function Equipt(ToolX)
+    pcall(function()
+    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(ToolX) then
+        getgenv().Tol = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(ToolX)
+        game.Players.LocalPlayer.Character.Humanoid:EquipTool(Tol)
+        end
+    end)
+end
+ 
+ 
+------------------------------------------------------| End
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+------------------------------------------------------| Gui
+
+repeat task.wait() until IsLoad == true
+print(("[Miu Hub] : Welcome %s Please Script Loading... "):format(game:GetService('Players').LocalPlayer.Name))
+ 
+    local Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/nontkph/MiuHubPremium/main/Library", true))()
+
+--// CreateNetWorkMark
+local Library = Module:CreateNetWorkMark("Miu Hub | Premium")
+
+--// Pages
+local Pages = {
+	["AutoFarms"] = Library:CreatePage("Auto Farm");
+	["Visulas"] = Library:CreatePage("Visulas");
+	["Players"] = Library:CreatePage("Players");
+	["Teleport"] = Library:CreatePage("Teleport");
+};
+
+local Taps = {
+	--// AutoFarm
+	["AutoFarm"] = Pages.AutoFarms:CreateTap("🍥 : Auto Farm", "Left");
+	["ConfigFarm"] = Pages.AutoFarms:CreateTap("⚙️ : Config Auto Farm", "Right");
+	["AutoBoss"] = Pages.AutoFarms:CreateTap("💀 : Auto Boss", "Left");
+    ["ServerStats"] = Pages.AutoFarms:CreateTap("️🌐 : Server Stats", "Right");	
+	--// Visulas
+
+};
+
+--[ Tables ]
+
+function GetQuest()
+    Level = game:GetService("ReplicatedStorage")[game:GetService("Players").LocalPlayer.Name.."Data"].Character.Level
+    if Level.Value >= 1 and Level.Value < 15 then
+        NPC = "Quest Thieves"
+        TargetCFrame = CFrame.new(-51.3818473815918, 143.80953979492188, -220.15077209472656)
+        Target = "Thieves [Lv.1]"
+        Spawn = CFrame.new(34.529319763183594, 146.191162109375, 187.29522705078125)
+        Island = "Starting Island"
+        elseif Level.Value >= 15 and Level.Value < 50 then
+        NPC = "Quest Soldier"
+        Spawn = CFrame.new(34.529319763183594, 146.191162109375, 187.29522705078125)
+        TargetCFrame = CFrame.new(-204.9314727783203, 145.7478485107422, -56.606536865234375)
+        Island = "Starting Island"
+        Target = "Soldier [Lv.15+]"
+        elseif Level.Value >= 50 and Level.Value < 75 then
+        NPC = "Quest Sailor"
+        Spawn = CFrame.new(1894.8424072265625, 144.85101318359375, 1607.3067626953125)
+        TargetCFrame = CFrame.new(2639.13134765625, 149.7683868408203, -1369.4273681640625)
+        Island = "Marine Island"
+        Target = "Sailor [Lv.50+]"
+        elseif Level.Value >= 75 and Level.Value < 100 then
+        NPC = "Quest EvilSailor"
+       Spawn = CFrame.new(1894.8424072265625, 144.85101318359375, 1607.3067626953125)
+        TargetCFrame = CFrame.new(2735.125244140625, 145.00213623046875, -1314.503173828125)
+        Island = "Marine Island"
+        Target = "Evil Sailor [Lv.75+]"
+        elseif Level.Value >= 100 and Level.Value < 150 then
+        NPC = "Quest Clown"
+        Spawn = "Becky Island"
+        TargetCFrame = CFrame.new(1989.00244140625, 144.85101318359375, 1737.4791259765625)
+        Island = "Becky Island"
+        Target = "Clown [Lv.100+]"
+        elseif Level.Value >= 150 and Level.Value < 250 then
+        NPC = "Quest Clown Pirates"
+        Spawn = CFrame.new(1894.9964599609375, 144.85101318359375, 1607.7315673828125)
+        TargetCFrame = CFrame.new(2015.7393798828125, 144.85101318359375, 1637.25)
+        Island = "Becky Island"
+        Target = "Clown Pirates [Lv.150+]"
+        elseif Level.Value >= 250 and Level.Value < 275 then
+        NPC = "Quest Fishman"
+        TargetCFrame = CFrame.new(5097.53271484375, 144.84658813476562, -2299.5673828125)
+        Spawn = CFrame.new(5030.6171875, 144.8508758544922, -2361.2080078125)
+        Island = "Arlong Park"
+        Target = "Fishman [Lv.250+]"
+        elseif Level.Value >= 275 and Level.Value < 350 then
+        NPC = "Quest IcebergThief"
+        Spawn = "Baratie"
+        TargetCFrame = CFrame.new(5097.53271484375, 144.84658813476562, -2299.5673828125)
+       Spawn = CFrame.new(5030.6171875, 144.8508758544922, -2361.2080078125)
+        Island = "Arlong Park"
+        Target = "Iceberg Thief [Lv.300+]"
+        elseif Level.Value >= 350 and Level.Value < 400 then
+        NPC = "Quest SnowRabbit"
+        Spawn = "Baratie"
+        TargetCFrame = CFrame.new(4025.4453125, 145.41944885253906, 851.03564453125)
+        Spawn = CFrame.new(3938.9287109375, 144.85101318359375, 817.7640991210938)
+        Island = "Snow Island"
+        Target = "Snow Rabbit [Lv.350+]"
+        elseif Level.Value >= 400 and Level.Value < 450 then
+        NPC = "Quest Revolutionary"
+        Spawn = "Snow Island"
+        TargetCFrame = CFrame.new(6848.162109375, 130.22695922851562, 2194.2353515625)
+        Spawn = CFrame.new(3938.9287109375, 144.85101318359375, 817.7640991210938)
+        Island = "Snow Island"
+        Target = "Revolutionary [Lv.400+]"
+         elseif Level.Value >= 450 and Level.Value < math.huge then
+        NPC = "Quest Rebel"
+        TargetCFrame = CFrame.new(6737.3544921875, 130.05331420898438, 2172.417724609375)
+        Target = "Rebel [Lv.450+]"
+        Spawn = CFrame.new(3938.9287109375, 144.85101318359375, 817.7640991210938)
+        Island = "Snow Island"
+    end
+end
+
+
+local BossTable = {
+	["Smokey'Boss [Lv.50+]"] = {
+		QuestBoss = "Quest Smokey'Boss";
+		Level = 35;
+		BossCFrame = CFrame.new(-184.4048309326172, 145.79397583007812, 118.09347534179688);
+		TargetBoss = "Smokey'Boss [Lv.50+]";
+	};
+	["Ax hand'Boss [Lv.100+]"] = {
+		QuestBoss = "Quest Ax hand'Boss";
+		Level = 85;
+		BossCFrame = CFrame.new(2816.974365234375, 195.93646240234375, -1471.4757080078125);
+		TargetBoss = "Ax hand'Boss [Lv.100+]";
+	};
+	["Becky'Boss [Lv.200+]"] = {
+		QuestBoss = "Quest Becky'Boss";
+		Level = 175;
+		BossCFrame = CFrame.new(1891.949462890625, 144.85101318359375, 1831.0877685546875);
+		TargetBoss = "Becky'Boss [Lv.200+]";
+	};
+	["Don Creek'Boss [Lv.250+]"] = {
+		QuestBoss = "Quest Don Creek'Boss";
+		Level = 225;
+		BossCFrame = CFrame.new(3608.01123046875, 164.56956481933594, 3410.58740234375);
+		TargetBoss = "Don Creek'Boss [Lv.250+]";
+	};
+	["Arlong'Boss [Lv.300+]"] = {
+		QuestBoss = "Quest Arlong'Boss";
+		Level = 275;
+		BossCFrame = CFrame.new(5073.12548828125, 145.03721618652344, -2464.578369140625);
+		TargetBoss = "Arlong'Boss [Lv.300+]";
+	};
+	["King Ippo'Boss [Lv.400+]"] = {
+		QuestBoss = "Quest Ippo'Boss";
+		Level = 375;
+		BossCFrame = CFrame.new(4370.25048828125, 144.8548583984375, 841.5927734375);
+		TargetBoss = "King Ippo'Boss [Lv.400+]";
+	};
+	["Crocodile'Boss [Lv.500+]"] = {
+		QuestBoss = "Quest Crocodile'Boss";
+		Level = 475;
+		BossCFrame = CFrame.new(6852.814453125, 160.19410705566406, 2380.69384765625);
+		TargetBoss = "Crocodile'Boss [Lv.500+]";
+	};
+};
+local BossName = {}
+for name, tables in pairs(BossTable) do
+	table.insert(BossName, name)
+end
+
+--[ Functions ]
+
+local Functions = {
+	--// AutoFarm
+	["AutoLevel"] = Taps.AutoFarm:AddToggle("Auto Level", _G.Config.AutoLevel, function( Callback )
+		_G.Config.AutoLevel = Callback
+		Save()
+	end);
+	["AutoQuest"] = Taps.AutoFarm:AddToggle("Auto Quest", _G.Config.AutoQuest, function( Callback )
+	    _G.Config.AutoQuest = Callback
+		Save()
+	end);
+	["Safe Mode"] = Taps.AutoFarm:AddToggle("Safe Mode", _G.Config.SafeMode, function( Callback )
+		_G.Config.SafeMode = Callback
+		Save()
+	end);
+	
+	--// Config Auto Farm
+	["SelectTool_"] = Taps.ConfigFarm:AddDropDown( ScanTools(), _G.Config.SelectTool, false, function(Callback)
+		_G.Config.SelectTool = Callback
+		Save()
+	end);
+	
+	["Select Stats"] = Taps.ConfigFarm:AddDropDown({ "Vitality", "Strength", "Agility", "Intelligence" }, ( _G.Config.SelectStsts or "" ), true, function(Callback)
+		_G.Config.SelectStsts = Callback
+		Save()
+	end);
+	["Auto Stats"] = Taps.ConfigFarm:AddToggle("Auto Stats", _G.Config.AutoStats, function( Callback )
+		_G.Config.AutoStats = Callback
+		Save()
+	end);
+	["Distance"] = Taps.ConfigFarm:AddSlider("Distance", 0, 6, 15, _G.Config.Distance, function(Callback)
+		_G.Config.Distance = Callback
+		Save()
+	end);
+	["Auto Stats"] = Taps.ConfigFarm:AddToggle("instant", _G.Config.instant, function( Callback )
+		_G.Config.instant = Callback
+		Save()
+	end);
+	
+	--// Auto Boss
+	["Select Boss"] = Taps.AutoBoss:AddDropDown( BossName, _G.Config.SelectBoss, false, function(Callback)
+		_G.Config.SelectBoss = Callback
+		Save()
+	end);
+	["Auto Boss"] = Taps.AutoBoss:AddToggle("Auto Boss", _G.Config.AutoBoss, function( Callback )
+		_G.Config.AutoBoss = Callback
+		Save()
+	end);
+	["Auto Boss Quest"] = Taps.AutoBoss:AddToggle("Auto Boss Quest", _G.Config.AutoBossQuest, function( Callback )
+		_G.Config.AutoBossQuest = Callback
+		Save()
+	end);
+	
+	--// Server Stats
+	["PlayersCount"] = Taps.ServerStats:AddLabel(string.format("🙃 : Player(s)      | %s", #game:GetService("Players"):GetChildren()));
+	["PlayerMax"] = Taps.ServerStats:AddLabel(string.format("👥 : PlayersMax  | %s", game:GetService("Players").MaxPlayers));
+	["PlaceId"] = Taps.ServerStats:AddLabel(string.format("📄 : PlaceId         | %s", game.PlaceId));
+	["Server Id"] = Taps.ServerStats:AddLabel(string.format("📜 : Server ID      | %s", game.JobId));
+	["CopyServerId"] = Taps.ServerStats:AddButton("[ Copy Server ID ]", function()
+	     setclipboard(game.JobId)
+	end);
+	["Rejoin"] = Taps.ServerStats:AddButton("Rejoin", function()
+	   Rejoin_F()   
+	end);
+	["Hop Server"] = Taps.ServerStats:AddButton("Hop Server", function()
+	   Hopping() 
+	end);
+	["Teleport Server"] = Taps.ServerStats:AddLabel("Teleport Server");
+	["ServerId"] = Taps.ServerStats:AddTextBox("Server Job Id", "", false, function(Callback)
+	    ServerJobId = Callback
+	end);
+	["Teleport"] = Taps.ServerStats:AddButton("Join Server", function()
+    teleportData = {
+    placeId = game.PlaceId,
+    jobId = ServerJobId
+    }
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer, teleportData)
+	end);
+};
+ 
+    task.wait(1)
+    warn(string.format( "Loading Succeed!" ))
+------------------------------------------------------| Gui End
+-----------------------------------------------------------------------------
+
+
+
+--// Funtion Scripts
+
+    game:GetService("Players").Changed:Connect(function()
+	    Functions.PlayersCount:Set(#game:GetService("Players"):GetChildren())
+    end)
+
+
+    task.defer(function()
+    while wait() do
+        if _G.Config.AutoBoss then
+            pcall(function()
+            if _G.Config.AutoBossQuest then
+                    if game:GetService("ReplicatedStorage")[game:GetService("Players").LocalPlayer.Name.."Data"].Quest.Target.Value ~= TargetBoss and game:GetService("ReplicatedStorage")[game:GetService("Players").LocalPlayer.Name.."Data"].Character.Level.Value >= BossTable[_G.Config.SelectBoss].Level then
+                        TP(BossTable[_G.Config.SelectBoss].BossCFrame)
+                        AccaptQuest(BossTable[_G.Config.SelectBoss].QuestBoss)
+                    task.wait()    
+                end
+            end
+        
+            for _, Enemy in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                if Enemy:FindFirstChild("Humanoid") and Enemy.Name == BossTable[_G.Config.SelectBoss].TargetBoss then
+                    if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid").Health > 0 and Enemy:FindFirstChild("Humanoid").Health > 0 then
+                        
+                        repeat
+                            game:GetService("Players").LocalPlayer.Character.PrimaryPart.CanCollide = false
+                            Enemy.PrimaryPart.CanCollide = false
+                            Equipt(_G.Config.SelectTool)
+                            Click()
+                            task.wait(.001)
+                            
+                           if (Enemy.PrimaryPart.Position -  game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position ).Magnitude > 300 then
+                                TP(Enemy.PrimaryPart.CFrame*CFrame.new(0, -(_G.Config.Distance), 2) * CFrame.Angles(math.rad(90), 0 ,0))  
+                            else
+                                game:GetService("Players").LocalPlayer.Character.PrimaryPart.CFrame = Enemy.PrimaryPart.CFrame*CFrame.new(0, -(_G.Config.Distance), 2) * CFrame.Angles(math.rad(90), 0 ,0)      
+                           end
+                       
+                            pcall(function()
+                                        task.defer(function()
+                                           if _G.Config.instant then
+                                            repeat task.wait() until Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name) and Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Damage.Value >= (Enemy.Humanoid.MaxHealth/2.25)
+                                             task.delay(.5, function()
+                                                Enemy:FindFirstChild("Humanoid").Health = 0
+                                            end)
+                                        end
+                                    end)
+                                end)
+                        
+                        until Enemy:FindFirstChild("Humanoid").Health <= 0 or not Enemy
+                        
+                    end    
+                end 
+            end
+            
+            
+            
+            end)
+            end
+        end
+    end)
+
+task.defer(function()
+    while task.wait() do
+  
+        if _G.Config.AutoLevel then
+        GetQuest()
+            if game:GetService("ReplicatedStorage")[game:GetService("Players").LocalPlayer.Name.."Data"].Character.Spawn.Value ~= Island then
+                    TP(TargetCFrame)
+                    TP(Spawn)
+                    SetSpawn()
+                else
+                    if game:GetService("ReplicatedStorage")[game:GetService("Players").LocalPlayer.Name.."Data"].Quest.Target.Value ~= Target and _G.Config.AutoQuest then
+                pcall(function()
+                    if (TargetCFrame.Position -  game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position ).Magnitude > 50 then
+                        task.wait(1)
+                        TP(TargetCFrame)  
+                    end
+                end)
+                AccaptQuest(NPC)
+                task.wait()
+                
+                else
+                    pcall(function()
+                    if (TargetCFrame.Position -  game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position ).Magnitude > 300 then
+                       TP(TargetCFrame)   
+                    end
+                    
+                    
+                    pcall(function()
+                    Click()
+                    for _, Enemy in pairs( game:GetService("Workspace").Enemies:GetChildren() ) do task.wait()
+                    if Enemy:FindFirstChild("Humanoid") then
+                        if Enemy.Name == Target and Enemy:FindFirstChild("Humanoid").Health > 0 and game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid").Health > 0 then
+                            repeat
+                                task.wait(.001)
+                                 Equipt(_G.Config.SelectTool)
+                                 if Enemy and Enemy:FindFirstChild("Humanoid") then
+                                      game:GetService("Players").LocalPlayer.Character.PrimaryPart.CanCollide = false
+                                     Enemy.PrimaryPart.CanCollide = false
+                                     --game:GetService("Players").LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new( game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position, Enemy.PrimaryPart.Position )
+                                     if (TargetCFrame.Position -  game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position ).Magnitude > 300 then
+                                         TP(Enemy.PrimaryPart.CFrame*CFrame.new(0, -(_G.Config.Distance), 2) * CFrame.Angles(math.rad(90), 0 ,0))  
+                                         else
+                                       game:GetService("Players").LocalPlayer.Character.PrimaryPart.CFrame = Enemy.PrimaryPart.CFrame*CFrame.new(0, -(_G.Config.Distance), 2) * CFrame.Angles(math.rad(90), 0 ,0)      
+                                    end
+                                    Click()
+                                       
+                                       pcall(function()
+                                        task.defer(function()
+                                           if _G.Config.instant then
+                                           repeat task.wait() until Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name) and Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Damage.Value >= (Enemy.Humanoid.MaxHealth/2.25)
+                                             task.delay(.5, function()
+                                           Enemy:FindFirstChild("Humanoid").Health = 0
+                                            end)
+                                            end
+                                        end)
+                                        end)
+                                       
+                                    end
+                                until _G.Config.AutoLevel == false or Enemy:FindFirstChild("Humanoid").Health <= 0
+                           
+                        end
+                    end
+                end
+            end)
+                    
+                    
+                end)
+            end
+                    
+            end
+        end
+    end
+end)
+
+
+task.defer(function()
+    game:GetService("RunService").Heartbeat:Connect(function()
+        if _G.Config.AutoLevel or _G.Config.AutoBoss then
+        if game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid") then
+            setfflag("HumanoidParallelRemoveNoPhysics", "False")
+            setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
+            game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(11)
+            end
+        end
+    end)
+end)
+
