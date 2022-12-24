@@ -24,6 +24,7 @@ _G.Config = {
   AutoStats = false;
   instant = false;
   AutoGrabFruits = false;
+  Points = 1;
 };
 local Path = string.format("Miu Hub [Premiun Scripts]/Sea of Destiny/[%s][%s].txt", game:GetService("Players").LocalPlayer.Name ,game:GetService("Players").LocalPlayer.UserId)
 function Save()
@@ -176,6 +177,7 @@ local Pages = {
 
 local Taps = {
 	--// AutoFarm
+	["TargetStats"] = Pages.AutoFarms:CreateTap("🔖 : Target Stats", "Left");
 	["AutoFarm"] = Pages.AutoFarms:CreateTap("🍥 : Auto Farm", "Left");
 	["ConfigFarm"] = Pages.AutoFarms:CreateTap("⚙️ : Config Auto Farm", "Right");
 	["AutoBoss"] = Pages.AutoFarms:CreateTap("💀 : Auto Boss", "Left");
@@ -205,19 +207,19 @@ function GetQuest()
         Target = "Soldier [Lv.15+]"
         elseif Level.Value >= 50 and Level.Value < 75 then
         NPC = "Quest Sailor"
-        Spawn = CFrame.new(1894.8424072265625, 144.85101318359375, 1607.3067626953125)
+        Spawn = CFrame.new(2549.711669921875, 144.85032653808594, -1265.820068359375)
         TargetCFrame = CFrame.new(2639.13134765625, 149.7683868408203, -1369.4273681640625)
         Island = "Marine Island"
         Target = "Sailor [Lv.50+]"
         elseif Level.Value >= 75 and Level.Value < 100 then
         NPC = "Quest EvilSailor"
-       Spawn = CFrame.new(1894.8424072265625, 144.85101318359375, 1607.3067626953125)
+       Spawn = CFrame.new(2549.711669921875, 144.85032653808594, -1265.820068359375)
         TargetCFrame = CFrame.new(2735.125244140625, 145.00213623046875, -1314.503173828125)
         Island = "Marine Island"
         Target = "Evil Sailor [Lv.75+]"
         elseif Level.Value >= 100 and Level.Value < 150 then
         NPC = "Quest Clown"
-        Spawn = "Becky Island"
+       Spawn = CFrame.new(1894.9964599609375, 144.85101318359375, 1607.7315673828125)
         TargetCFrame = CFrame.new(1989.00244140625, 144.85101318359375, 1737.4791259765625)
         Island = "Becky Island"
         Target = "Clown [Lv.100+]"
@@ -315,6 +317,8 @@ game:GetService("Workspace").Other.Fruits.ChildAdded:Connect(Checking)
 
 local Functions = {
 	--// AutoFarm
+	["TargetLabel"] = Taps.TargetStats:AddLabel("👻 : Target | nil");
+	["TargetHealth"] = Taps.TargetStats:AddLabel("🩸 : Health | N/A");
 	["AutoLevel"] = Taps.AutoFarm:AddToggle("Auto Level", _G.Config.AutoLevel, function( Callback )
 		_G.Config.AutoLevel = Callback
 		Save()
@@ -333,6 +337,10 @@ local Functions = {
 		_G.Config.SelectTool = Callback
 		Save()
 	end);
+	["Points"] = Taps.ConfigFarm:AddSlider("Points", 1, (_G.Config.Points or 1), 499, false, function(Callback)
+		_G.Config.Points = Callback
+	    Save()
+	end);
 	["Select Stats"] = Taps.ConfigFarm:AddDropDown({ "Vitality", "Strength", "Agility", "Intelligence" }, ( _G.Config.SelectStsts or "" ), true, function(Callback)
 		_G.Config.SelectStsts = Callback
 		Save()
@@ -345,11 +353,13 @@ local Functions = {
 		_G.Config.Distance = Callback
 		Save()
 	end);
-	["Auto Stats"] = Taps.ConfigFarm:AddToggle("instant", _G.Config.instant, function( Callback )
+	["instant"] = Taps.ConfigFarm:AddToggle("instant", _G.Config.instant, function( Callback )
 		_G.Config.instant = Callback
 		Save()
 	end);
-	
+	["WhiteScreen"] = Taps.ConfigFarm:AddToggle("White Screen", (_G.Config.WhiteScreen or false), function(callback)
+	    Library:WhiteScreen(callback)
+	end);
 	--// Auto Boss
 	["Select Boss"] = Taps.AutoBoss:AddDropDown( BossName, _G.Config.SelectBoss, false, function(Callback)
 		_G.Config.SelectBoss = Callback
@@ -398,7 +408,7 @@ local Functions = {
 	       end
 	   end
 	end);
-	["GrabFruitsToggle"] = Taps.Other:AddToggle("🍎 : Auto Grab Fruits",( _G.AutoGrabFruits ) ,function(Callback)
+	["GrabFruitsToggle"] = Taps.Other:AddToggle("🍎 : Auto Grab Fruits",( _G.Config.AutoGrabFruits ) ,function(Callback)
 	    _G.Config.AutoGrabFruits = Callback
 	    Save()
 	   if Callback then
@@ -462,11 +472,12 @@ local Functions = {
                             else
                                 game:GetService("Players").LocalPlayer.Character.PrimaryPart.CFrame = Enemy.PrimaryPart.CFrame*CFrame.new(0, -(_G.Config.Distance), 2) * CFrame.Angles(math.rad(90), 0 ,0)      
                            end
-                       
+                            Functions["TargetLabel"]:Set( string.format("👻 : Target | %s", Enemy.Name) )
+                            Functions["TargetHealth"]:Set( string.format("🩸 : Health | %s/%s", math.round(Enemy.Humanoid.Health), math.round(Enemy.Humanoid.MaxHealth)) )
                             pcall(function()
                                         task.defer(function()
                                            if _G.Config.instant then
-                                            repeat task.wait() until Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name) and Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Damage.Value >= (Enemy.Humanoid.MaxHealth/2.25)
+                                            repeat task.wait() until Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name) and Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Damage.Value >= (Enemy.Humanoid.MaxHealth/2)
                                              task.delay(.5, function()
                                                 Enemy:FindFirstChild("Humanoid").Health = 0
                                             end)
@@ -486,6 +497,39 @@ local Functions = {
             end
         end
     end)
+    
+task.defer(function()
+    while task.wait(1) do
+        pcall(function()
+        if _G.Config.AutoStats then
+            local Spil = string.split(tostring(unpack(_G.Config.SelectStsts)), ",")
+            for num, string_ in pairs(Spil) do
+                if string.match(string_, "Vitality") then
+                    local A_1 = "Defend"
+                    local A_2 = _G.Config.Points
+                    local Event = game:GetService("ReplicatedStorage").Remote.Other.upstats
+                    Event:InvokeServer(A_1, A_2)
+                elseif string.match(string_, "Strength") then
+                    local A_1 = "Melee"
+                    local A_2 = _G.Config.Points
+                    local Event = game:GetService("ReplicatedStorage").Remote.Other.upstats
+                    Event:InvokeServer(A_1, A_2)
+                elseif string.match(string_, "Agility") then
+                    local A_1 = "Sword"
+                    local A_2 = _G.Config.Points
+                    local Event = game:GetService("ReplicatedStorage").Remote.Other.upstats
+                    Event:InvokeServer(A_1, A_2)
+                elseif string.match(string_, "Intelligence") then
+                    local A_1 = "Power"
+                    local A_2 = _G.Config.Points
+                    local Event = game:GetService("ReplicatedStorage").Remote.Other.upstats
+                    Event:InvokeServer(A_1, A_2)
+                end
+            end
+           end 
+        end)
+    end
+end)
 
 task.defer(function()
     while task.wait() do
@@ -532,11 +576,12 @@ task.defer(function()
                                        game:GetService("Players").LocalPlayer.Character.PrimaryPart.CFrame = Enemy.PrimaryPart.CFrame*CFrame.new(0, -(_G.Config.Distance), 2) * CFrame.Angles(math.rad(90), 0 ,0)      
                                     end
                                     Click()
-                                       
+                                       Functions["TargetLabel"]:Set( string.format("👻 : Target | %s", Enemy.Name) )
+                                       Functions["TargetHealth"]:Set( string.format("🩸 : Health | %s/%s", math.round(Enemy.Humanoid.Health), math.round(Enemy.Humanoid.MaxHealth)) )
                                        pcall(function()
                                         task.defer(function()
                                            if _G.Config.instant then
-                                           repeat task.wait() until Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name) and Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Damage.Value >= (Enemy.Humanoid.MaxHealth/2.25)
+                                           repeat task.wait() until Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name) or not Enemy and Enemy.PlayersDamage:FindFirstChild(game:GetService("Players").LocalPlayer.Name).Damage.Value >= (Enemy.Humanoid.MaxHealth/2)
                                              task.delay(.5, function()
                                            Enemy:FindFirstChild("Humanoid").Health = 0
                                             end)
