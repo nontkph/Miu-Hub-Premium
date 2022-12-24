@@ -337,7 +337,7 @@ local Functions = {
 		_G.Config.SelectTool = Callback
 		Save()
 	end);
-	["Points"] = Taps.ConfigFarm:AddSlider("Points", 1, (_G.Config.Points or 1), 499, false, function(Callback)
+	["Points"] = Taps.ConfigFarm:AddSlider("Points", 1, (_G.Config.Points or 1), 100, false, function(Callback)
 		_G.Config.Points = Callback
 	    Save()
 	end);
