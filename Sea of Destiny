@@ -338,7 +338,7 @@ local Functions = {
 		Save()
 	end);
 	["Points"] = Taps.ConfigFarm:AddSlider("Points", 1, (_G.Config.Points or 1), 100, false, function(Callback)
-		_G.Config.Points = Callback
+		_G.Config.Points = math.clamp(Callback, 1, 100)
 	    Save()
 	end);
 	["Select Stats"] = Taps.ConfigFarm:AddDropDown({ "Vitality", "Strength", "Agility", "Intelligence" }, ( _G.Config.SelectStsts or "" ), true, function(Callback)
