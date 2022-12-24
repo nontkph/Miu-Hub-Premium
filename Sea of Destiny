@@ -25,6 +25,8 @@ _G.Config = {
   instant = false;
   AutoGrabFruits = false;
   Points = 1;
+  AutoKeys = "";
+  AutoMasteryFarm = false;
 };
 local Path = string.format("Miu Hub [Premiun Scripts]/Sea of Destiny/[%s][%s].txt", game:GetService("Players").LocalPlayer.Name ,game:GetService("Players").LocalPlayer.UserId)
 function Save()
@@ -181,7 +183,8 @@ local Taps = {
 	["AutoFarm"] = Pages.AutoFarms:CreateTap("🍥 : Auto Farm", "Left");
 	["ConfigFarm"] = Pages.AutoFarms:CreateTap("⚙️ : Config Auto Farm", "Right");
 	["AutoBoss"] = Pages.AutoFarms:CreateTap("💀 : Auto Boss", "Left");
-    ["ServerStats"] = Pages.AutoFarms:CreateTap("️🌐 : Server Stats", "Right");	
+    ["ServerStats"] = Pages.AutoFarms:CreateTap("️🌐 : Server Stats", "Right");
+    ["AutoMastery"] = Pages.AutoFarms:CreateTap("⚒️: Auto Mastery","Left");
 	--// Visulas
     ["Other"] = Pages.Visulas:CreateTap("🧩 : Other", "Left");
  
@@ -341,7 +344,7 @@ local Functions = {
 		_G.Config.Points = math.clamp(Callback, 1, 100)
 	    Save()
 	end);
-	["Select Stats"] = Taps.ConfigFarm:AddDropDown({ "Vitality", "Strength", "Agility", "Intelligence" }, ( _G.Config.SelectStsts or "" ), true, function(Callback)
+	["Select Stats"] = Taps.ConfigFarm:AddDropDown({ "Vitality", "Strength", "Agility", "Intelligence" }, ( _G.Config.SelectStsts or {} ), true, function(Callback)
 		_G.Config.SelectStsts = Callback
 		Save()
 	end);
@@ -398,6 +401,20 @@ local Functions = {
     jobId = ServerJobId
     }
     game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer, teleportData)
+	end);
+	
+	--// Auto Mastery
+	["SelectFarmMastery"] = Taps.AutoMastery:AddDropDown(ScanTools(), ( _G.Config.SelectMasteryFarm or "[ Select Tool ]" ), false, function(Callback)
+		_G.Config.SelectMasteryFarm = Callback
+		Save()
+	end);
+	["SelectKeys"] = Taps.AutoMastery:AddDropDown({"Z", "X", "C", "V"}, ( _G.Config.AutoKeys or {} ), true, function(Callback)
+		_G.Config.AutoKeys = Callback
+		Save()
+	end);
+	["Auto Mastery"] = Taps.AutoMastery:AddToggle("Auto Mastery Farm",( _G.Config.AutoMasteryFarm or false ) ,function(Callback)
+	    _G.Config.AutoMasteryFarm = Callback
+	    Save()
 	end);
 	
 	--// Visulas
@@ -472,6 +489,22 @@ local Functions = {
                             else
                                 game:GetService("Players").LocalPlayer.Character.PrimaryPart.CFrame = Enemy.PrimaryPart.CFrame*CFrame.new(0, -(_G.Config.Distance), 2) * CFrame.Angles(math.rad(90), 0 ,0)      
                            end
+                           
+                           pcall(function()
+                            if _G.Config.AutoMasteryFarm then
+                                if Enemy.Humanoid.Health <= (Enemy.Humanoid.MaxHealth/4) then
+                                    Equipt(_G.Config.SelectMasteryFarm)
+                                    task.wait(.5)
+                                     for _, keys in pairs(_G.Config.SelectKeys) do task.wait()
+                                     game:service'VirtualInputManager':SendKeyEvent(true, keys, false, game)
+                                     task.wait(.5)
+                                     game:service'VirtualInputManager':SendKeyEvent(true, keys, false, game)
+                                    end
+                                end
+                            end
+                           task.wait()
+                            end)
+                           
                             Functions["TargetLabel"]:Set( string.format("👻 : Target | %s", Enemy.Name) )
                             Functions["TargetHealth"]:Set( string.format("🩸 : Health | %s/%s", math.round(Enemy.Humanoid.Health), math.round(Enemy.Humanoid.MaxHealth)) )
                             pcall(function()
@@ -576,6 +609,22 @@ task.defer(function()
                                        game:GetService("Players").LocalPlayer.Character.PrimaryPart.CFrame = Enemy.PrimaryPart.CFrame*CFrame.new(0, -(_G.Config.Distance), 2) * CFrame.Angles(math.rad(90), 0 ,0)      
                                     end
                                     Click()
+                                    
+                                    pcall(function()
+                            if _G.Config.AutoMasteryFarm then
+                                if Enemy.Humanoid.Health <= (Enemy.Humanoid.MaxHealth/4) then
+                                    Equipt(_G.Config.SelectMasteryFarm)
+                                    task.wait(.5)
+                                     for _, keys in pairs(_G.Config.SelectKeys) do task.wait()
+                                     game:service'VirtualInputManager':SendKeyEvent(true, keys, false, game)
+                                     task.wait(.5)
+                                     game:service'VirtualInputManager':SendKeyEvent(true, keys, false, game)
+                                    end
+                                end
+                            end
+                           task.wait()
+                            end)
+                                    
                                        Functions["TargetLabel"]:Set( string.format("👻 : Target | %s", Enemy.Name) )
                                        Functions["TargetHealth"]:Set( string.format("🩸 : Health | %s/%s", math.round(Enemy.Humanoid.Health), math.round(Enemy.Humanoid.MaxHealth)) )
                                        pcall(function()
