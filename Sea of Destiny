@@ -25,7 +25,7 @@ _G.Config = {
   instant = false;
   AutoGrabFruits = false;
   Points = 1;
-  AutoKeys = "";
+  AutoKeys = {};
   AutoMasteryFarm = false;
 };
 local Path = string.format("Miu Hub [Premiun Scripts]/Sea of Destiny/[%s][%s].txt", game:GetService("Players").LocalPlayer.Name ,game:GetService("Players").LocalPlayer.UserId)
@@ -164,7 +164,7 @@ end
 repeat task.wait() until IsLoad == true
 print(("[Miu Hub] : Welcome %s Please Script Loading... "):format(game:GetService('Players').LocalPlayer.Name))
  
-    local Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/nontkph/MiuHubPremium/main/Library", true))()
+local Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/nontkph/MiuHubPremium/main/Library", true))()
 
 --// CreateNetWorkMark
 local Library = Module:CreateNetWorkMark("Miu Hub | Premium")
@@ -667,3 +667,4 @@ task.defer(function()
         end
     end)
 end)
+
