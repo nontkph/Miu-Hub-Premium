@@ -1,17 +1,15 @@
-print("Please Wait")
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local User = Players.LocalPlayer
 local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
 local Camera = game:GetService("Workspace").CurrentCamera
-local CameraShaker = true
 local PageSet = nil
 local Mouse = User:GetMouse()
 local UserInputService = game:GetService("UserInputService")
-print("Load UI")
+
 if not _G.MVOIUSOISFJIUESFJNFJNSFOWDOPKSNCNCEHFJJHFJADIRRTETWJNCNFLKWJSOFKJU then
-    User:Kick('anti http spy')
+	User:Kick('anti http spy')
 end
 
 local Method = {
@@ -96,10 +94,8 @@ function Method.Create(Text)
 	
 	if RunService:IsStudio() then
 		ScreenGui.Parent = User.PlayerGui
-		CameraShaker = require(script.CameraShaker)
 	else
 		ScreenGui.Parent = game:GetService("CoreGui")
-		CameraShaker = require(1461025953)
 	end
 	
 	UICorner.CornerRadius = UDim.new(0, 10)
@@ -132,7 +128,7 @@ function Method.Create(Text)
 	UIStroke_2.Color = Method.Config.StrokeColor
 	----------
 	repeat task.wait() until game.Loaded
-
+	
 	task.wait(3)
 	TweenService:Create(Main, TweenInfo.new(2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), { Size = UDim2.new(0, 500, 0 ,650) }):Play()
 	Sound("rbxassetid://10024739463", .5)
