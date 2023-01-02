@@ -1,3 +1,4 @@
+print("Please Wait")
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local User = Players.LocalPlayer
