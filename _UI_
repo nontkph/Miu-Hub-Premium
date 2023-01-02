@@ -8,7 +8,7 @@ local CameraShaker = true
 local PageSet = nil
 local Mouse = User:GetMouse()
 local UserInputService = game:GetService("UserInputService")
-
+print("Load UI")
 if not _G.MVOIUSOISFJIUESFJNFJNSFOWDOPKSNCNCEHFJJHFJADIRRTETWJNCNFLKWJSOFKJU then
 	User:Kick('anti http spy')
 end
